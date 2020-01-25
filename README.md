@@ -5,7 +5,7 @@
 ### Team members (format: GitHub username, last name, first name):
 - aalija8157, Alija, Asllan
 - caid4134, Cai, David
-- 
+- aazim516, Azim, Anowarul 
 -
 - 
 - 
