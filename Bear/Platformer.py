@@ -134,7 +134,7 @@ def display_msg(tile):
         if r[0]*16 == tile[0].x and r[1]*16 == tile[0].y:
             msg = r[2]
 
-    font = pygame.font.Font(pygame.font.match_font('arial'), 14)
+    font = pygame.font.Font(pygame.font.match_font('arial'), 12)
     i = 0
     for s in msg:
         text_surface = font.render(s, True, (0,0,0))
