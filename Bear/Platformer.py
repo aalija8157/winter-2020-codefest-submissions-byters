@@ -1,4 +1,5 @@
 import pygame, sys
+import os
 from sprites import *
 
 clock = pygame.time.Clock()
@@ -9,7 +10,8 @@ pygame.init() # initiates pygame
 pygame.display.set_caption('Pygame Platformer')
 
 WINDOW_SIZE = (1500,900)
-imgpath = "../img/"
+current_path = os.path.dirname(__file__)
+imgpath = os.path.join(current_path, 'img/')
 SPRITE_SHEET = imgpath + "bear-polar.png"
 screen = pygame.display.set_mode(WINDOW_SIZE,0,32) # initiate the window
 spritesheet = Spritesheet(SPRITE_SHEET)
@@ -26,6 +28,7 @@ true_scroll = [0, 0]
 message_blocks = []
 curr_msg = []
 msg_time = 0
+spawn = [100, 100]
 
 def load_map(path):
     f = open(path + '.txt', 'r')
@@ -36,14 +39,9 @@ def load_map(path):
     i = 0
     for row in data:
         game_map.append(list(row))
-
-    for i in range(10):
-        game_map.append([])
-        for j in range(len(game_map[0])):
-            game_map[len(game_map) - 1].append('4')
     return game_map
 
-game_map = load_map('../map')
+game_map = load_map(current_path + '/map')
 standing_frames = [spritesheet.get_image(0, 7, 31, 20),
                    spritesheet.get_image(32, 7, 31, 20),
                    spritesheet.get_image(64, 7, 31, 20)]
@@ -71,13 +69,14 @@ snow_img = pygame.image.load(imgpath + 'snow.png')
 plat_img = pygame.image.load(imgpath + "plat.png")
 water_img = pygame.image.load(imgpath + "water.jpg")
 hint_img = pygame.image.load(imgpath + "hint.png")
+flag_img = pygame.image.load(imgpath + "flag.png")
 water_img = pygame.transform.scale(water_img, (16, 16))
 plat_img = pygame.transform.scale(plat_img, (16, 16))
 snow_img = pygame.transform.scale(snow_img, (16, 16))
 player_img = spritesheet.get_image(0, 7, 31, 20)
 player_img.set_colorkey((0, 0, 0))
-messages = [["Watch out!", "Sometimes the ice under you will break and you will fall in the water!", "Make sure you hit these blocks in the future, they give facts that you need to defeat the level!"
-             ]]
+messages = [["Watch out!", "Sometimes the ice under you will break and you will fall in the water!", "Make sure you hit these blocks in the future, they give facts that you need to defeat the level!"],
+            ["Did you know that glaciers are rapidly melting?", "The main cause of this is the increase of carbon dioxide", "and other greenhouse gasses"]]
 player_rect = pygame.Rect(100,100,31,20)
 
 def collision_test(rect,tiles):
@@ -116,8 +115,11 @@ def move(rect,movement,tiles):
             global curr_msg
             curr_msg = tile
         if tile[1] == '4':
-            rect.x = 100
-            rect.y = 100
+            rect.x = spawn[0]
+            rect.y = spawn[1]
+        if tile[1] == '7':
+            spawn[0] = rect.x
+            spawn[1] = rect.y
     return rect, collision_types
 
 def break_ice(x, y, tile):
@@ -157,23 +159,20 @@ while True: # game loop
             strn = ''
             if tile == '1':
                 display.blit(snow_img,(x*16-scroll[0],y*16-scroll[1]))
-                strn = '1'
             if tile == '5':
                 display.blit(snow_img,(x*16-scroll[0],y*16-scroll[1]))
-                strn = '5'
             if tile == '2':
                 display.blit(plat_img,(x*16-scroll[0],y*16-scroll[1]))
-                strn = '2'
             if tile == '4':
                 display.blit(water_img, (x*16-scroll[0],y*16-scroll[1]))
-                strn = '4'
             if tile == '6':
                 display.blit(hint_img, (x*16-scroll[0],y*16-scroll[1]))
                 message_blocks.append((x, y, messages[msgidx]))
                 msgidx += 1
-                strn = '6'
+            if tile == '7':
+                display.blit(flag_img, (x*16 - scroll[0], y*16 - scroll[1]))
             if tile != '0':
-                tile_rects.append((pygame.Rect(x*16,y*16,16,16), strn))
+                tile_rects.append((pygame.Rect(x*16,y*16,16,16), tile))
             x += 1
         y += 1
     if len(curr_msg) != 0:
