@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pygame, sys
 import os
 from sprites import *
