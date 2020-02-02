@@ -42,7 +42,7 @@ def load_map(path):
         game_map.append(list(row))
     return game_map
 
-game_map = load_map(current_path + '/map')
+game_map = load_map(current_path + 'map')
 standing_frames = [spritesheet.get_image(0, 7, 31, 20),
                    spritesheet.get_image(32, 7, 31, 20),
                    spritesheet.get_image(64, 7, 31, 20)]
